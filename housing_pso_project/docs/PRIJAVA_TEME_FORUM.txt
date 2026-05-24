@@ -1,0 +1,3 @@
+Tema: Usporedba treniranja neuronske mreže PSO algoritmom i backpropagation metodom na problemu predikcije cijena nekretnina
+
+Planiramo implementirati model neuronske mreže za predikciju cijena nekretnina na temelju atributa kao što su kvadratura, broj soba, stanje objekta, godina izgradnje te lokacija kodirana one-hot pristupom. Glavni dio projekta bit će treniranje težina mreže optimizacijom rojem čestica (PSO), dok će standardno treniranje backpropagation metodom služiti kao referentni model za usporedbu. Evaluirat ćemo modele metrikama MAE, RMSE, MSE i R² te provesti eksperimente s brojem čestica, brojem iteracija i veličinom skrivenog sloja. Programsku implementaciju planiramo izraditi u Pythonu uz biblioteke NumPy, pandas, scikit-learn i matplotlib.

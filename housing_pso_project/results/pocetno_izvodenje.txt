@@ -1,0 +1,26 @@
+Konfiguracija: config.json
+=== PODACI ===
+pocetni_broj_zapisa: 4600
+nedostajuce_vrijednosti: 0
+cijena_nula_ili_manja: 49
+uklonjeni_outlieri: 46
+granica_outliera: 2016000.0
+broj_zapisa_nakon_obrade: 4505
+broj_atributa: 56
+train_zapisi: 3153
+validation_zapisi: 676
+test_zapisi: 676
+minimalna_cijena: 7800.0
+maksimalna_cijena: 2005000.0
+prosjecna_cijena: 528700.6669574816
+medijan_cijene: 461000.0
+
+=== BACKPROPAGATION ===
+MAE: 104,367.34 | RMSE: 195,328.94 | R2: 0.5172 | vrijeme: 0.26s
+Detalji: {'broj_epoha': 255, 'broj_skrivenih_neurona': 6, 'broj_train_zapisa': 1200}
+
+=== PSO ===
+MAE: 144,860.69 | RMSE: 199,926.46 | R2: 0.4942 | vrijeme: 0.08s
+Detalji: {'broj_skrivenih_neurona': 6, 'broj_parametara_mreze': 349, 'broj_cestica': 20, 'broj_iteracija': 80, 'broj_train_zapisa': 1200, 'najbolji_scaled_train_mse': 0.4480094834388135}
+
+Rezultati su spremljeni u results/tablice, a grafovi u results/grafovi.
