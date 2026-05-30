@@ -1,13 +1,17 @@
 import tkinter as tk
 import json
+import os
 import subprocess
 import sys
 import threading
 from pathlib import Path
+import ctypes
 
+import joblib
 import numpy as np
 
 from predict import predvidi, napravi_ulazni_vektor
+from predict_backpropagation import predvidi as predvidi_backpropagation
 
 
 # -----------------------------
@@ -24,11 +28,16 @@ VAL_FILE = DATA_DIR / "val.csv"
 TEST_FILE = DATA_DIR / "test.csv"
 
 MODEL_PSO_FILE = MODEL_DIR / "model_pso.npz"
-MODEL_BACKPROP_FILE = MODEL_DIR / "model_backpropagation.npz"
+MODEL_BACKPROP_FILE = MODEL_DIR / "model_backpropagation.joblib"
 
 SCRIPT_PREPARE_DATA = PROJECT_DIR / "prepare_data.py"
+
 SCRIPT_TRAIN_PSO = PROJECT_DIR / "train_pso.py"
 SCRIPT_EVALUATE_TEST = PROJECT_DIR / "evaluate_test.py"
+
+SCRIPT_TRAIN_BACKPROP = PROJECT_DIR / "train_backpropagation.py"
+SCRIPT_EVALUATE_BACKPROP = PROJECT_DIR / "evaluate_backpropagation_test.py"
+
 PERSON_FILE = PROJECT_DIR / "prediction-data" / "person.json"
 
 
@@ -64,8 +73,8 @@ BOJA_INFO_RUB = "#3b82f6"
 # -----------------------------
 
 def postavi_ikonu(root):
-    ico_path = Path("assets") / "app.ico"
-    png_path = Path("assets") / "app.png"
+    ico_path = PROJECT_DIR / "assets" / "app.ico"
+    png_path = PROJECT_DIR / "assets" / "app.png"
 
     try:
         if ico_path.exists():
@@ -73,11 +82,16 @@ def postavi_ikonu(root):
         elif png_path.exists():
             icon_image = tk.PhotoImage(file=str(png_path))
             root.iconphoto(True, icon_image)
-
-            # Zadržavamo referencu da Python ne obriše sliku iz memorije.
             root.icon_image = icon_image
     except Exception:
-        # Ikona nije kritična za rad aplikacije.
+        pass
+
+
+def postavi_windows_app_id():
+    try:
+        app_id = "ri.projekt.predikcija.skoka"
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
+    except Exception:
         pass
 
 
@@ -271,6 +285,30 @@ def pokreni_predikciju(model_file, naziv_modela):
         prikazi_gresku(str(e))
 
 
+def pokreni_predikciju_backpropagation():
+    try:
+        if not MODEL_BACKPROP_FILE.exists():
+            raise FileNotFoundError(
+                f"Nedostaje datoteka modela:\n{MODEL_BACKPROP_FILE}\n\n"
+                "Prvo istreniraj backpropagation model ili klikni gumb 'Pripremi okolinu'."
+            )
+
+        osoba = procitaj_podatke_iz_sucelja()
+
+        spremljeno = joblib.load(MODEL_BACKPROP_FILE)
+        X = napravi_ulazni_vektor(osoba)
+
+        predikcija = predvidi_backpropagation(spremljeno, X)
+
+        prikazi_rezultat(
+            "Backpropagation model\n\n"
+            f"Predviđeni skok u dalj iz mjesta: {predikcija:.2f} cm"
+        )
+
+    except Exception as e:
+        prikazi_gresku(str(e))
+
+
 def resetiraj_polja():
     age_entry.delete(0, tk.END)
     height_entry.delete(0, tk.END)
@@ -370,12 +408,18 @@ def pokreni_skriptu(script_path):
     if not script_path.exists():
         raise FileNotFoundError(f"Nedostaje skripta: {script_path.name}")
 
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONUTF8"] = "1"
+
     rezultat = subprocess.run(
-        [sys.executable, script_path.name],
+        [sys.executable, "-X", "utf8", script_path.name],
         cwd=PROJECT_DIR,
         capture_output=True,
         text=True,
-        errors="replace"
+        encoding="utf-8",
+        errors="replace",
+        env=env
     )
 
     if rezultat.returncode != 0:
@@ -403,14 +447,13 @@ def postavi_gumbe_zauzeto(zauzeto):
     if zauzeto:
         okolina_button.config(state="disabled", cursor="")
         pso_button.config(state="disabled", cursor="")
+        backprop_button.config(state="disabled", cursor="")
         reset_button.config(state="disabled", cursor="")
     else:
         okolina_button.config(state="normal", cursor="hand2")
         pso_button.config(state="normal", cursor="hand2")
+        backprop_button.config(state="normal", cursor="hand2")
         reset_button.config(state="normal", cursor="hand2")
-
-    # Backpropagation ostaje onemogućen dok ne implementiraš i ne istreniraš taj model.
-    backprop_button.config(state="disabled")
 
 
 def priprema_okoline_worker():
@@ -421,7 +464,7 @@ def priprema_okoline_worker():
             0,
             lambda: azuriraj_status_pripreme(
                 "Priprema okoline je pokrenuta...\n\n"
-                "[1/3] Provjera podataka..."
+                "[1/5] Provjera podataka..."
             )
         )
 
@@ -435,8 +478,8 @@ def priprema_okoline_worker():
             0,
             lambda: azuriraj_status_pripreme(
                 "Priprema okoline je pokrenuta...\n\n"
-                "[1/3] Podaci su spremni.\n"
-                "[2/3] Provjera PSO modela..."
+                "[1/5] Podaci su spremni.\n"
+                "[2/5] Provjera PSO modela..."
             )
         )
 
@@ -450,17 +493,52 @@ def priprema_okoline_worker():
             0,
             lambda: azuriraj_status_pripreme(
                 "Priprema okoline je pokrenuta...\n\n"
-                "[1/3] Podaci su spremni.\n"
-                "[2/3] PSO model je spreman.\n"
-                "[3/3] Evaluacija modela..."
+                "[1/5] Podaci su spremni.\n"
+                "[2/5] PSO model je spreman.\n"
+                "[3/5] Evaluacija PSO modela..."
             )
         )
 
         if TEST_FILE.exists() and MODEL_PSO_FILE.exists():
             pokreni_skriptu(SCRIPT_EVALUATE_TEST)
-            log.append("✓ Evaluacija modela je završena.")
+            log.append("✓ Evaluacija PSO modela je završena.")
         else:
-            log.append("⚠ Evaluacija je preskočena jer nedostaje test skup ili PSO model.")
+            log.append("⚠ Evaluacija PSO modela je preskočena.")
+
+        root.after(
+            0,
+            lambda: azuriraj_status_pripreme(
+                "Priprema okoline je pokrenuta...\n\n"
+                "[1/5] Podaci su spremni.\n"
+                "[2/5] PSO model je spreman.\n"
+                "[3/5] PSO evaluacija je završena.\n"
+                "[4/5] Provjera Backpropagation modela..."
+            )
+        )
+
+        if MODEL_BACKPROP_FILE.exists():
+            log.append("✓ Backpropagation model već postoji.")
+        else:
+            pokreni_skriptu(SCRIPT_TRAIN_BACKPROP)
+            log.append("✓ Backpropagation model je istreniran.")
+
+        root.after(
+            0,
+            lambda: azuriraj_status_pripreme(
+                "Priprema okoline je pokrenuta...\n\n"
+                "[1/5] Podaci su spremni.\n"
+                "[2/5] PSO model je spreman.\n"
+                "[3/5] PSO evaluacija je završena.\n"
+                "[4/5] Backpropagation model je spreman.\n"
+                "[5/5] Evaluacija Backpropagation modela..."
+            )
+        )
+
+        if TEST_FILE.exists() and MODEL_BACKPROP_FILE.exists():
+            pokreni_skriptu(SCRIPT_EVALUATE_BACKPROP)
+            log.append("✓ Evaluacija Backpropagation modela je završena.")
+        else:
+            log.append("⚠ Evaluacija Backpropagation modela je preskočena.")
 
         zavrsni_tekst = "\n".join(log)
 
@@ -489,7 +567,7 @@ def pokreni_pripremu_okoline():
 
     prikazi_info(
         "Priprema okoline je pokrenuta...\n\n"
-        "[1/3] Provjera / priprema podataka..."
+        "[1/5] Provjera podataka..."
     )
 
     thread = threading.Thread(target=priprema_okoline_worker, daemon=True)
@@ -529,6 +607,8 @@ def prilagodi_sirinu(event):
 # -----------------------------
 # Glavni prozor
 # -----------------------------
+
+postavi_windows_app_id()
 
 root = tk.Tk()
 root.title("Predikcija skoka u dalj")
@@ -732,16 +812,19 @@ hover_gumb(pso_button, BOJA_PSO_GUMB, BOJA_PSO_GUMB_HOVER)
 backprop_button = tk.Button(
     button_frame,
     text="Predikcija Backpropagation modelom",
-    command=lambda: pokreni_predikciju(MODEL_BACKPROP_FILE, "Backpropagation model"),
-    bg=BOJA_DISABLED,
+    command=pokreni_predikciju_backpropagation,
+    bg="#059669",
     fg="white",
+    activebackground="#047857",
+    activeforeground="white",
     disabledforeground="white",
     relief="flat",
     bd=0,
     font=("Segoe UI", 11, "bold"),
-    state="disabled"
+    cursor="hand2"
 )
 backprop_button.pack(fill="x", ipady=11, pady=(0, 10))
+hover_gumb(backprop_button, "#059669", "#047857")
 
 reset_button = tk.Button(
     button_frame,
