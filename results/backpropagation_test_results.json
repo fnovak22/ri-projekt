@@ -1,0 +1,8 @@
+{
+    "model": "backpropagation",
+    "arhitektura": "6-10-1",
+    "metoda_treniranja": "backpropagation_sgd",
+    "test_mse": 346.00310492187884,
+    "test_rmse": 18.6011586983682,
+    "test_mae": 14.548138187666417
+}
