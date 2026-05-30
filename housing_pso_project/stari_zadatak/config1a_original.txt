@@ -1,6 +1,0 @@
-w=0.9
-w_smanjenje=0.00007
-C=1.49445
-broj_cestica=30
-broj_iteracija=10000
-refreshing_gap=5
