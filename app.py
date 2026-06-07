@@ -1132,17 +1132,6 @@ title_label = tk.Label(
 )
 title_label.pack(fill="x")
 
-subtitle_label = tk.Label(
-    header_frame,
-    text="Aplikacija za pripremu podataka, predikciju i evaluaciju PSO i Backpropagation modela.",
-    bg=BOJA_POZADINE,
-    fg=BOJA_MUTNOG_TEKSTA,
-    font=("Segoe UI", 11),
-    anchor="w",
-    justify="left"
-)
-subtitle_label.pack(fill="x", pady=(6, 0))
-
 
 # -----------------------------
 # Tabovi aplikacije
@@ -1247,7 +1236,6 @@ priprema_status_naslov.pack(fill="x", padx=16, pady=(14, 4))
 
 priprema_status_tekst = tk.Label(
     priprema_status_frame,
-    text="Klikni 'Pripremi okolinu' za pripremu podataka i treniranje modela.",
     bg=BOJA_KARTICE,
     fg=BOJA_MUTNOG_TEKSTA,
     font=("Segoe UI", 12),
@@ -1280,7 +1268,6 @@ split_graf_naslov.pack(fill="x", padx=16, pady=(14, 4))
 
 split_graf_opis = tk.Label(
     split_graf_kartica,
-    text="Graf prikazuje koliki dio pripremljenih podataka pripada train, validation i test skupu.",
     bg=BOJA_KARTICE,
     fg=BOJA_MUTNOG_TEKSTA,
     font=("Segoe UI", 10),
@@ -1498,7 +1485,6 @@ graf_predikcija_naslov.pack(fill="x", padx=16, pady=(14, 4))
 
 graf_predikcija_opis = tk.Label(
     graf_predikcija_kartica,
-    text="Nakon klika na gumb 'Usporedi modele' ovdje se prikazuje usporedba predikcija PSO i Backpropagation modela.",
     bg=BOJA_KARTICE,
     fg=BOJA_MUTNOG_TEKSTA,
     font=("Segoe UI", 10),
@@ -1536,7 +1522,6 @@ rezultat_naslov.pack(fill="x", padx=16, pady=(14, 4))
 
 rezultat_tekst = tk.Label(
     rezultat_frame,
-    text="Unesi podatke osobe i klikni 'Usporedi modele'.",
     bg=BOJA_KARTICE,
     fg=BOJA_MUTNOG_TEKSTA,
     font=("Segoe UI", 12),
@@ -1573,10 +1558,6 @@ evaluacija_naslov.pack(fill="x", pady=(0, 12))
 
 evaluacija_opis = tk.Label(
     evaluacija_content,
-    text=(
-        "U ovom dijelu prikazuju se grafovi i metrike za usporedbu PSO i Backpropagation modela. "
-        "Evaluacija se provodi na testnom skupu jer on predstavlja podatke koje model nije koristio tijekom treniranja."
-    ),
     bg=BOJA_KARTICE,
     fg=BOJA_TEKSTA,
     font=("Segoe UI", 11),
@@ -1689,7 +1670,6 @@ evaluacija_status_naslov.pack(fill="x", padx=16, pady=(14, 4))
 
 evaluacija_status_tekst = tk.Label(
     evaluacija_status_frame,
-    text="Odaberi graf koji želiš prikazati. Ako graf ne radi, prvo klikni 'Pripremi okolinu' u prvom tabu.",
     bg=BOJA_KARTICE,
     fg=BOJA_MUTNOG_TEKSTA,
     font=("Segoe UI", 11),
