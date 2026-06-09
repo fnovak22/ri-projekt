@@ -8,9 +8,6 @@ import numpy as np
 MODEL_FILE = Path("models") / "model_backpropagation.joblib"
 PERSON_CONFIG_FILE = Path("prediction-data") / "person.json"
 
-# gender kodiranje u projektu:
-# F = 1, M = 0
-
 
 def ucitaj_podatke_osobe(config_file):
     if not config_file.exists():
@@ -36,8 +33,6 @@ def ucitaj_podatke_osobe(config_file):
         if kljuc not in osoba:
             raise KeyError(f"U {config_file} nedostaje ključ: {kljuc}")
 
-    # Dozvoljeno je upisati gender kao broj ili kao tekst.
-    # Interno koristimo: F = 1, M = 0.
     if isinstance(osoba["gender"], str):
         gender = osoba["gender"].strip().upper()
 
@@ -76,16 +71,12 @@ def predvidi(spremljeno, X):
     y_mean = float(spremljeno["y_mean"])
     y_std = float(spremljeno["y_std"])
 
-    # Normalizacija ulaza na isti način kao kod treniranja
     X_norm = (X - X_mean) / X_std
 
-    # MLPRegressor očekuje 2D oblik: jedan redak, više stupaca
     X_norm = X_norm.reshape(1, -1)
 
-    # Predikcija je prvo u normaliziranom obliku
     y_norm = model.predict(X_norm)
 
-    # Vraćanje predikcije u centimetre
     y_cm = y_norm * y_std + y_mean
 
     return float(y_cm[0])

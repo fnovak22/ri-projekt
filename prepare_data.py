@@ -28,14 +28,10 @@ def main():
 
     df = df[ULAZNI_STUPCI + [IZLAZNI_STUPAC]].copy()
 
-    # Gender pretvaramo u broj jer neuronska mreža radi s numeričkim ulazima.
-    # F = 1, M = 0
     df["gender"] = df["gender"].map({"F": 1, "M": 0})
 
-    # Izbacujemo retke u kojima nešto nedostaje.
     df = df.dropna()
 
-    # Prvo odvojimo test skup: 15% ukupnih podataka.
     train_val_df, test_df = train_test_split(
         df,
         test_size=0.15,
@@ -43,8 +39,6 @@ def main():
         shuffle=True,
     )
 
-    # Od preostalih 85% uzimamo validaciju tako da bude 15% ukupnog skupa.
-    # 0.15 / 0.85 = 0.176470588...
     train_df, val_df = train_test_split(
         train_val_df,
         test_size=0.15 / 0.85,

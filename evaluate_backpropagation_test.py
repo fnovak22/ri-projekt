@@ -6,21 +6,11 @@ import pandas as pd
 
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
-
-# -----------------------------
-# Postavke
-# -----------------------------
-
 TEST_DATOTEKA = "data/test.csv"
 MODEL_DATOTEKA = "models/model_backpropagation.joblib"
 
 RESULTS_DIR = "results"
 RESULTS_DATOTEKA = "results/backpropagation_test_results.json"
-
-
-# -----------------------------
-# Funkcija za metrike
-# -----------------------------
 
 def izracunaj_metrike(y_stvarno, y_predikcija):
     mse = mean_squared_error(y_stvarno, y_predikcija)
@@ -28,11 +18,6 @@ def izracunaj_metrike(y_stvarno, y_predikcija):
     mae = mean_absolute_error(y_stvarno, y_predikcija)
 
     return mse, rmse, mae
-
-
-# -----------------------------
-# Učitavanje modela
-# -----------------------------
 
 def ucitaj_model():
     if not os.path.exists(MODEL_DATOTEKA):
@@ -44,11 +29,6 @@ def ucitaj_model():
     spremljeno = joblib.load(MODEL_DATOTEKA)
 
     return spremljeno
-
-
-# -----------------------------
-# Evaluacija na test skupu
-# -----------------------------
 
 def evaluiraj_na_test_skupu(spremljeno):
     test_df = pd.read_csv(TEST_DATOTEKA)
@@ -65,23 +45,15 @@ def evaluiraj_na_test_skupu(spremljeno):
     X_test = test_df[ulazni_stupci].values
     y_test = test_df[izlazni_stupac].values
 
-    # Test podaci se normaliziraju pomoću prosjeka i std-a iz TRAIN skupa
     X_test_norm = (X_test - X_mean) / X_std
 
-    # Predikcija je prvo u normaliziranom obliku
     y_pred_norm = model.predict(X_test_norm)
 
-    # Vraćanje predikcije u centimetre
     y_pred = y_pred_norm * y_std + y_mean
 
     mse, rmse, mae = izracunaj_metrike(y_test, y_pred)
 
     return mse, rmse, mae
-
-
-# -----------------------------
-# Glavni program
-# -----------------------------
 
 def main():
     print("Učitavanje backpropagation modela...")

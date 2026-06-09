@@ -6,9 +6,6 @@ import numpy as np
 MODEL_FILE = Path("models") / "model_pso.npz"
 PERSON_CONFIG_FILE = Path("prediction-data") / "person.json"
 
-# gender kodiranje u projektu:
-# F = 1, M = 0
-
 
 def relu(x):
     return np.maximum(0, x)
@@ -37,8 +34,6 @@ def ucitaj_podatke_osobe(config_file):
         if kljuc not in osoba:
             raise KeyError(f"U {config_file} nedostaje ključ: {kljuc}")
 
-    # Dozvoljeno je upisati gender kao broj ili kao tekst.
-    # Interno koristimo: F = 1, M = 0.
     if isinstance(osoba["gender"], str):
         gender = osoba["gender"].strip().upper()
         if gender == "F":

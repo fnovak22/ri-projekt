@@ -18,11 +18,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from predict import predvidi, napravi_ulazni_vektor
 from predict_backpropagation import predvidi as predvidi_backpropagation
 
-
-# -----------------------------
-# Putanje projekta
-# -----------------------------
-
 PROJECT_DIR = Path(__file__).resolve().parent
 
 DATA_DIR = PROJECT_DIR / "data"
@@ -56,11 +51,6 @@ ULAZNI_STUPCI = [
 
 IZLAZNI_STUPAC = "broad jump_cm"
 
-
-# -----------------------------
-# Boje sučelja
-# -----------------------------
-
 BOJA_POZADINE = "#f3f6fb"
 BOJA_KARTICE = "#ffffff"
 BOJA_TEKSTA = "#1f2937"
@@ -82,11 +72,6 @@ BOJA_GRESKA_RUB = "#ef4444"
 
 BOJA_INFO = "#eff6ff"
 BOJA_INFO_RUB = "#3b82f6"
-
-
-# -----------------------------
-# Pomoćne funkcije za sučelje
-# -----------------------------
 
 def postavi_ikonu(root):
     ico_path = PROJECT_DIR / "assets" / "app.ico"
@@ -296,11 +281,6 @@ def hover_gumb(gumb, normalna_boja, hover_boja):
     gumb.bind("<Enter>", on_enter)
     gumb.bind("<Leave>", on_leave)
 
-
-# -----------------------------
-# Logika predikcije
-# -----------------------------
-
 def procitaj_podatke_iz_sucelja():
     if spol_var.get() == "Žensko":
         gender = 1
@@ -501,12 +481,6 @@ def postavi_vrijednost(entry, vrijednost):
 
 
 def postavi_spol(vrijednost):
-    """
-    Podržava više mogućih formata:
-    - 1 ili "1" ili "F" ili "female" -> Žensko
-    - 0 ili "0" ili "M" ili "male" -> Muško
-    """
-
     vrijednost = str(vrijednost).strip().lower()
 
     if vrijednost in ["1", "f", "female", "žensko", "zensko"]:
@@ -544,11 +518,6 @@ def ucitaj_person_json_ako_postoji():
             f"Detalji greške:\n{e}"
         )
 
-
-
-# -----------------------------
-# Grafovi i evaluacija
-# -----------------------------
 
 def ocisti_frame(frame):
     for widget in frame.winfo_children():
@@ -819,9 +788,6 @@ def prikazi_usporedbu_metrika():
     except Exception as e:
         prikazi_gresku_evaluacije(str(e))
 
-# -----------------------------
-# Logika pripreme okoline
-# -----------------------------
 
 def postoje_pripremljeni_podaci():
     return TRAIN_FILE.exists() and VAL_FILE.exists() and TEST_FILE.exists()
@@ -1019,10 +985,6 @@ def pokreni_pripremu_okoline():
     thread.start()
 
 
-# -----------------------------
-# Scroll funkcije
-# -----------------------------
-
 def scroll_misem(event):
     if event.num == 4:
         canvas.yview_scroll(-1, "units")
@@ -1056,9 +1018,6 @@ def prilagodi_sirinu(event):
         evaluacija_opis.config(wraplength=dostupna_sirina)
 
 
-# -----------------------------
-# Glavni prozor
-# -----------------------------
 
 postavi_windows_app_id()
 
@@ -1073,9 +1032,6 @@ root.configure(bg=BOJA_POZADINE)
 postavi_ikonu(root)
 
 
-# -----------------------------
-# Scrollable glavni layout
-# -----------------------------
 
 main_container = tk.Frame(root, bg=BOJA_POZADINE)
 main_container.pack(fill="both", expand=True)
@@ -1112,10 +1068,6 @@ canvas.bind_all("<Button-4>", scroll_misem)
 canvas.bind_all("<Button-5>", scroll_misem)
 
 
-# -----------------------------
-# Sadržaj
-# -----------------------------
-
 outer_frame = tk.Frame(scrollable_frame, bg=BOJA_POZADINE)
 outer_frame.pack(fill="both", expand=True, padx=22, pady=22)
 
@@ -1133,10 +1085,6 @@ title_label = tk.Label(
 title_label.pack(fill="x")
 
 
-# -----------------------------
-# Tabovi aplikacije
-# -----------------------------
-
 notebook = ttk.Notebook(outer_frame)
 notebook.pack(fill="x", expand=False)
 
@@ -1149,9 +1097,6 @@ notebook.add(evaluacija_tab, text="Evaluacija")
 notebook.add(predikcija_tab, text="Predikcija")
 
 
-# -----------------------------
-# Tab 1: Priprema i podaci
-# -----------------------------
 
 priprema_card = tk.Frame(
     priprema_tab,
@@ -1212,10 +1157,6 @@ okolina_button = tk.Button(
 okolina_button.pack(fill="x", ipady=11, pady=(0, 10))
 hover_gumb(okolina_button, BOJA_OKOLINA_GUMB, BOJA_OKOLINA_GUMB_HOVER)
 
-# -----------------------------
-# Status pripreme okoline
-# -----------------------------
-
 priprema_status_frame = tk.Frame(
     priprema_content,
     bg=BOJA_KARTICE,
@@ -1243,10 +1184,6 @@ priprema_status_tekst = tk.Label(
     justify="left"
 )
 priprema_status_tekst.pack(fill="x", padx=16, pady=(0, 16))
-
-# -----------------------------
-# Graf podjele podataka
-# -----------------------------
 
 split_graf_kartica = tk.Frame(
     priprema_content,
@@ -1280,9 +1217,6 @@ split_graf_opis.pack(fill="x", padx=16, pady=(0, 10))
 split_graf_frame = tk.Frame(split_graf_kartica, bg=BOJA_KARTICE)
 split_graf_frame.pack(fill="both", expand=True, padx=16, pady=(0, 16))
 
-# -----------------------------
-# Tab 2: Predikcija
-# -----------------------------
 
 card = tk.Frame(
     predikcija_tab,
@@ -1305,10 +1239,6 @@ section_label = tk.Label(
 )
 section_label.pack(fill="x", pady=(0, 18))
 
-
-# -----------------------------
-# Forma
-# -----------------------------
 
 age_entry = napravi_polje(form_frame, "Dob")
 
@@ -1356,10 +1286,6 @@ bend_entry = napravi_polje(form_frame, "Pretklon u sjedu (cm)")
 situps_entry = napravi_polje(form_frame, "Broj trbušnjaka")
 
 
-# -----------------------------
-# Gumbi
-# -----------------------------
-
 button_frame = tk.Frame(card, bg=BOJA_KARTICE)
 button_frame.pack(fill="x", padx=24, pady=(0, 22))
 
@@ -1396,10 +1322,6 @@ reset_button = tk.Button(
 )
 reset_button.pack(fill="x", ipady=9)
 
-
-# -----------------------------
-# Kartice za usporedbu modela
-# -----------------------------
 
 usporedba_frame = tk.Frame(card, bg=BOJA_KARTICE)
 usporedba_frame.pack(fill="x", padx=24, pady=(0, 22))
@@ -1460,11 +1382,6 @@ backprop_vrijednost_label = tk.Label(
 )
 backprop_vrijednost_label.pack(fill="x", padx=12, pady=(0, 14))
 
-
-# -----------------------------
-# Graf usporedbe predikcija
-# -----------------------------
-
 graf_predikcija_kartica = tk.Frame(
     card,
     bg=BOJA_KARTICE,
@@ -1498,10 +1415,6 @@ graf_predikcija_frame = tk.Frame(graf_predikcija_kartica, bg=BOJA_KARTICE)
 graf_predikcija_frame.pack(fill="both", expand=True, padx=16, pady=(0, 16))
 
 
-# -----------------------------
-# Rezultat
-# -----------------------------
-
 rezultat_frame = tk.Frame(
     card,
     bg=BOJA_KARTICE,
@@ -1529,11 +1442,6 @@ rezultat_tekst = tk.Label(
     justify="left"
 )
 rezultat_tekst.pack(fill="x", padx=16, pady=(0, 16))
-
-
-# -----------------------------
-# Tab 2: Evaluacija
-# -----------------------------
 
 evaluacija_card = tk.Frame(
     evaluacija_tab,
@@ -1699,10 +1607,6 @@ evaluacija_graf_naslov.pack(fill="x", padx=16, pady=(14, 4))
 
 evaluacija_graf_frame = tk.Frame(evaluacija_graf_kartica, bg=BOJA_KARTICE)
 evaluacija_graf_frame.pack(fill="both", expand=True, padx=16, pady=(0, 16))
-
-# -----------------------------
-# Pokretanje aplikacije
-# -----------------------------
 
 ucitaj_person_json_ako_postoji()
 
