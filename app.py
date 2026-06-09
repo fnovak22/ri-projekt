@@ -380,7 +380,7 @@ def pokreni_predikciju_backpropagation():
     except Exception as e:
         prikazi_gresku(str(e))
 
-
+# GRAF: Usporedba predikcija modela za unesenu osobu
 def prikazi_graf_usporedbe_predikcija(pso_predikcija, backprop_predikcija):
     for widget in graf_predikcija_frame.winfo_children():
         widget.destroy()
@@ -593,7 +593,7 @@ def nacrtaj_figure_u_frame(fig, frame):
     plt.close(fig)
     root.after(100, osvjezi_scroll_region)
 
-
+# GRAF: Podjela podataka na train, validation i test skup
 def prikazi_graf_podjele_podataka():
     ocisti_frame(split_graf_frame)
 
@@ -715,7 +715,7 @@ def izracunaj_metrike(y_stvarno, y_predikcija):
     mae = float(np.mean(np.abs(y_stvarno - y_predikcija)))
     return mse, rmse, mae
 
-
+# GRAF: Stvarne i predviđene vrijednosti na test skupu
 def prikazi_graf_stvarno_predvideno(naziv_modela, funkcija_predikcija):
     try:
         y_test, y_pred = funkcija_predikcija()
@@ -748,7 +748,7 @@ def prikazi_graf_stvarno_predvideno(naziv_modela, funkcija_predikcija):
     except Exception as e:
         prikazi_gresku_evaluacije(str(e))
 
-
+# GRAF: Reziduali modela na test skupu
 def prikazi_graf_reziduala(naziv_modela, funkcija_predikcija):
     try:
         y_test, y_pred = funkcija_predikcija()
@@ -776,7 +776,7 @@ def prikazi_graf_reziduala(naziv_modela, funkcija_predikcija):
     except Exception as e:
         prikazi_gresku_evaluacije(str(e))
 
-
+# GRAF: Usporedba metrika PSO i Backpropagation modela
 def prikazi_usporedbu_metrika():
     try:
         y_pso, pred_pso = predikcije_pso_test()
