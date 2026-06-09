@@ -85,7 +85,7 @@ def treniraj_backpropagation(X_train, y_train):
         batch_size=64,
         tol=1e-6,
         n_iter_no_change=50,
-        random_state=42,
+        random_state=None,
         verbose=True
     )
 

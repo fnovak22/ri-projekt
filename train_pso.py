@@ -135,7 +135,8 @@ def ucitaj_splitove():
 
 
 def treniraj_pso(X_train, y_train):
-    rng = np.random.default_rng(RANDOM_SEED)
+    #rng = np.random.default_rng(RANDOM_SEED)
+    rng = np.random.default_rng()
 
     dimenzija = broj_parametara()
 
