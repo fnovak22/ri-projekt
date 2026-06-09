@@ -113,7 +113,7 @@ def izracunaj_izlaz_mreze(X, cestica):
     # također u ovoj liniji je skriveno to da se koristi agregirajuća funkcija ZBRAJANJE -->
 
     skriveni_izlaz = relu(skriveni_net)
-    #na te net vrijednosti svakon neurona treba primjeniti aktivacijsku funkciju funkciju
+    #na te net vrijednosti svakon neurona treba primjeniti aktivacijsku funkciju
 
     # Izlazni sloj je linearan jer predviđamo realnu vrijednost u cm.
     izlaz = skriveni_izlaz @ W2 + b2
@@ -123,7 +123,7 @@ def izracunaj_izlaz_mreze(X, cestica):
     # (5,) to znači: jednodimenzionalni niz s 5 elemenata
     # (5, 1) to znači: matrica s 5 redaka i 1 stupcem
     # kako bi y_pred imao isti oblik kao y_train pri računanju MSE-a
-    # to nam treba jer ponekad racunamo izlaz mreze za jednu osobu (kod treniranja)
+    # to nam treba jer ponekad racunamo izlaz mreze za jednu osobu (kod testiranja)
 
 
 def fitness(cestica, X_train, y_train):
@@ -140,7 +140,6 @@ def ucitaj_splitove():
     if not TRAIN_FILE.exists() or not VAL_FILE.exists():
         raise FileNotFoundError(
             "Nedostaju data/train.csv ili data/val.csv. "
-            "Prvo pokreni: python prepare_data.py"
         )
 
     train_df = pd.read_csv(TRAIN_FILE)
@@ -227,7 +226,7 @@ def treniraj_pso(X_train, y_train):
             # ažuriraj položaje gledane čestice na temelju nove brzine
             pozicije[i] = pozicije[i] + brzine[i]
 
-            #izralunaj fitness vrijednost novu
+            #izračunaj fitness vrijednost novu
             vrijednost = fitness(pozicije[i], X_train, y_train)
 
             if vrijednost < personal_best_vrijednosti[i]:

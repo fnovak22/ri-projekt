@@ -103,7 +103,6 @@ def main():
     if not MODEL_FILE.exists():
         raise FileNotFoundError(
             "Nedostaje models/model_pso.npz. "
-            "Prvo pokreni: python train_pso.py"
         )
 
     osoba = ucitaj_podatke_osobe(PERSON_CONFIG_FILE)
